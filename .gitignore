@@ -1,6 +1,7 @@
-# Config de ferramentas de IA — nao versionar
+# Config de ferramentas locais e artefatos de trabalho — nao versionar
 .claude/
 CLAUDE.md
+WorkItens/
 
 # Sistema operacional
 .DS_Store
@@ -16,3 +17,13 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Android / Gradle — build e config de maquina
+.gradle/
+build/
+app/build/
+local.properties
+*.apk
+*.aab
+captures/
+.cxx/

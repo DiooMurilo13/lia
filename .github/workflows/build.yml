@@ -1,0 +1,62 @@
+name: Build do app
+
+# Compila o app, roda os testes e disponibiliza o APK para download
+# a cada push ou PR nas branches principais.
+on:
+  push:
+    branches: [ main, homolog ]
+  pull_request:
+    branches: [ main, homolog ]
+  workflow_dispatch: {} # permite rodar manualmente pelo site do GitHub
+
+permissions:
+  contents: write # necessario para publicar o APK em Releases
+
+jobs:
+  build:
+    name: Compilar e testar
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Preparar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Instalar plataforma Android 34
+        run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Permissao de execucao do gradlew
+        run: chmod +x ./gradlew
+
+      - name: Rodar testes
+        run: ./gradlew test
+
+      - name: Compilar APK de debug
+        run: ./gradlew assembleDebug
+
+      - name: Publicar APK para download (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: lia-app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      # So publica em Releases quando cai na homolog (codigo ja mesclado),
+      # nunca em PR. Link direto e sempre o mesmo: tag "debug-latest".
+      - name: Publicar versao em Releases (download direto do .apk)
+        if: github.ref == 'refs/heads/homolog' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: debug-latest
+          name: Lia — versao de teste (mais recente)
+          body: APK de debug mais recente da Lia, gerado automaticamente. Baixe o arquivo app-debug.apk e instale no celular.
+          prerelease: true
+          files: app/build/outputs/apk/debug/app-debug.apk

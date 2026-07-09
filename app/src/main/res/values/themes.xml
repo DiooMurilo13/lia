@@ -1,0 +1,6 @@
+<resources>
+    <!-- Tema base do app. A Lia e voz-primeiro; a UI e minima. -->
+    <style name="Theme.Lia" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
+    </style>
+</resources>

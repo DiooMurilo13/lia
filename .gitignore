@@ -1,0 +1,18 @@
+# Config de ferramentas de IA — nao versionar
+.claude/
+CLAUDE.md
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ambiente / segredos
+.env
+.env.*
+!.env.example
